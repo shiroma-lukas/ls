@@ -35,6 +35,7 @@
 }
 
 html {
+  scroll-snap-type: y proximity;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -376,7 +377,7 @@ main {
   position: relative;
   z-index: 1;
   min-height: 100svh;
-  min-height: 100dvh;
+  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -416,7 +417,6 @@ main {
   left: 0;
   width: 100%;
   height: 100svh;
-  height: 100dvh;
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
@@ -444,7 +444,6 @@ main {
   align-items: center;
   overflow: hidden;
   height: 100svh;
-  height: 100dvh;
   min-height: 0;
 }
 
@@ -1488,6 +1487,7 @@ main {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+    scroll-snap-type: none;
   }
 
   .reveal {
