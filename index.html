@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A little story, just for you." />
+  <title>Happy Birthday ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+
+  <nav class="progress-nav" aria-label="Story chapters">
+    <ol id="chapter-dots"></ol>
+  </nav>
+
+  <main>
+  <!-- HERO -->
+  <section class="chapter hero" id="hero" data-chapter="Begin">
+    <div class="hero-content reveal">
+      <p class="eyebrow">A story written for you</p>
+      <h1>Happy Birthday,<br /><span class="name" id="her-name">[Her Name]</span></h1>
+      <p class="hero-sub">Scroll down — every chapter is a little piece of us.</p>
+      <div class="scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 5v14M5 12l7 7 7-7"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 1 -->
+  <section class="chapter story-chapter" id="chapter-1" data-chapter="Chapter 1">
+    <div class="chapter-inner">
+      <span class="chapter-label reveal">Chapter 1</span>
+      <h2 class="chapter-title reveal">The day we met</h2>
+      <div class="story-text reveal">
+        <p>Some stories begin with fireworks. Ours began quieter — a moment that didn't feel loud at the time, but somehow rearranged everything.</p>
+        <p>I didn't know yet that you'd become my favorite person to talk to, my calm in chaos, the reason ordinary days started to feel extraordinary.</p>
+      </div>
+      <blockquote class="pull-quote reveal">
+        "I still remember exactly how you smiled."
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- CHAPTER 2 -->
+  <section class="chapter story-chapter alt" id="chapter-2" data-chapter="Chapter 2">
+    <div class="chapter-inner">
+      <span class="chapter-label reveal">Chapter 2</span>
+      <h2 class="chapter-title reveal">Little moments</h2>
+      <div class="story-text reveal">
+        <p>It's not always the big adventures. It's the way you laugh at something silly. The late-night conversations. The comfortable silences. The way you make a room feel warmer just by being in it.</p>
+        <p>These are the pages I keep turning back to — the ones I never want to end.</p>
+      </div>
+    </div>
+    <ul class="moments-grid reveal" aria-label="Favorite little moments">
+      <li class="moment-card">
+        <span class="moment-icon">☕</span>
+        <p>Morning coffees together</p>
+      </li>
+      <li class="moment-card">
+        <span class="moment-icon">🌙</span>
+        <p>Late-night talks</p>
+      </li>
+      <li class="moment-card">
+        <span class="moment-icon">🎵</span>
+        <p>Our songs on repeat</p>
+      </li>
+      <li class="moment-card">
+        <span class="moment-icon">🌸</span>
+        <p>Random adventures</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- PHOTO GALLERY -->
+  <section class="chapter gallery-chapter" id="gallery" data-chapter="Memories">
+    <div class="chapter-inner">
+      <span class="chapter-label reveal">Memories</span>
+      <h2 class="chapter-title reveal">Us, in pictures</h2>
+      <p class="gallery-hint reveal">Replace these placeholders with your favorite photos in <code>index.html</code></p>
+    </div>
+    <div class="photo-grid reveal">
+      <figure class="photo-card">
+        <div class="photo-placeholder" data-label="Photo 1">
+          <!-- Replace with: <img src="photos/01.jpg" alt="A memory together" /> -->
+        </div>
+        <figcaption>Our first adventure</figcaption>
+      </figure>
+      <figure class="photo-card wide">
+        <div class="photo-placeholder" data-label="Photo 2"></div>
+        <figcaption>A day I'll never forget</figcaption>
+      </figure>
+      <figure class="photo-card">
+        <div class="photo-placeholder" data-label="Photo 3"></div>
+        <figcaption>Just us</figcaption>
+      </figure>
+      <figure class="photo-card">
+        <div class="photo-placeholder" data-label="Photo 4"></div>
+        <figcaption>My favorite smile</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3 -->
+  <section class="chapter story-chapter" id="chapter-3" data-chapter="Chapter 3">
+    <div class="chapter-inner">
+      <span class="chapter-label reveal">Chapter 3</span>
+      <h2 class="chapter-title reveal">Why you</h2>
+      <ul class="reasons-list reveal">
+        <li>Your kindness — the real, quiet kind</li>
+        <li>How you see the best in people (and in me)</li>
+        <li>Your laugh — I could listen to it forever</li>
+        <li>The way you make every place feel like home</li>
+        <li>Because with you, even ordinary feels like magic</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FINALE -->
+  <section class="chapter finale" id="finale" data-chapter="Finale">
+    <div class="finale-content reveal">
+      <p class="eyebrow">And today…</p>
+      <h2>Happy Birthday,<br /><span class="name" id="her-name-finale">[Her Name]</span></h2>
+      <p class="finale-message">
+        Thank you for being you. For every chapter we've written so far,
+        and for all the ones still waiting for us. I love you — today and always.
+      </p>
+      <p class="signature" id="your-name">— With all my love, [Your Name]</p>
+      <button class="confetti-btn" id="confetti-btn" type="button">🎂 Make it rain</button>
+    </div>
+  </section>
+  </main>
+
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
