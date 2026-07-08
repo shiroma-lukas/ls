@@ -380,7 +380,7 @@ main {
   min-height: 100svh;
   min-height: 100dvh;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1327,7 +1327,7 @@ main {
   }
 
   html {
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: y proximity;
   }
 
   .chapter {
