@@ -942,22 +942,47 @@ main {
   margin: 0;
   /* match the source photos (591x1280) so nothing gets cropped oddly */
   aspect-ratio: 591 / 1280;
+  cursor: pointer;
+  perspective: 900px;
+  transition: transform 0.4s var(--ease-out), z-index 0s;
+}
+
+.photo-collage .photo-card.flipped {
+  z-index: 3;
+}
+
+/* rotating 3D layer */
+.photo-collage .photo-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.photo-collage .photo-card.flipped .photo-inner {
+  transform: translateZ(30px) rotateY(180deg);
+}
+
+.photo-collage .photo-front,
+.photo-collage .photo-back {
+  position: absolute;
+  inset: 0;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
-  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
-  .photo-collage .photo-card:hover {
+  .photo-collage .photo-card:not(.flipped):hover {
     transform: scale(1.12);
     z-index: 2;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
   }
 }
 
 .photo-collage .photo-placeholder,
-.photo-collage .photo-card img {
+.photo-collage .photo-front img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -994,6 +1019,74 @@ main {
   color: var(--rose-light);
   font-family: var(--font-display);
 }
+
+.photo-collage .photo-back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1.2rem 0.9rem;
+  background-color: var(--back-color, var(--purple));
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  background-blend-mode: overlay;
+  overflow: hidden;
+}
+
+/* keep note text/heart above the textured background */
+.photo-collage .photo-back > * {
+  position: relative;
+  z-index: 1;
+}
+
+.photo-collage .photo-card:nth-child(1) .photo-back {
+  --back-color: #7a4fd6;
+}
+
+.photo-collage .photo-card:nth-child(2) .photo-back {
+  --back-color: #2f9fa8;
+}
+
+.photo-collage .photo-card:nth-child(3) .photo-back {
+  --back-color: #d64f86;
+}
+
+/* framed inner border */
+.photo-collage .photo-back::before {
+  content: "";
+  position: absolute;
+  inset: 0.5rem;
+  border: 1px dashed rgba(255, 255, 255, 0.45);
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+/* oversized decorative quote mark */
+.photo-collage .photo-back::after {
+  content: "\201C";
+  position: absolute;
+  top: 0.1rem;
+  left: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+.photo-collage .photo-back p {
+  position: relative;
+  margin: 0;
+  font-size: clamp(0.95rem, 3.6vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.28;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
 
 /* ── Reasons list ───────────────────────────────────────────── */
 .reasons-list {

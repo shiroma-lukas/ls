@@ -374,10 +374,12 @@
 
     cards.forEach((card) => {
       card.addEventListener("mouseenter", () => {
+        if (card.classList.contains("flipped")) return;
         card.style.transition = "transform 0.12s ease-out, box-shadow 0.4s var(--ease-out)";
       });
 
       card.addEventListener("mousemove", (e) => {
+        if (card.classList.contains("flipped")) return;
         const rect = card.getBoundingClientRect();
         const px = (e.clientX - rect.left) / rect.width - 0.5;
         const py = (e.clientY - rect.top) / rect.height - 0.5;
@@ -390,6 +392,34 @@
       card.addEventListener("mouseleave", () => {
         card.style.transition = "";
         card.style.transform = "";
+      });
+    });
+  }
+
+  // ── Photo flip: click a photo to pop and flip to the note ────
+  function initPhotoFlip() {
+    const cards = document.querySelectorAll(".photo-collage .photo-card");
+    if (!cards.length) return;
+
+    cards.forEach((card) => {
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-pressed", "false");
+
+      function toggle() {
+        const flipped = card.classList.toggle("flipped");
+        card.setAttribute("aria-pressed", flipped ? "true" : "false");
+        // Clear any hover-tilt transform so the flip animates from neutral.
+        card.style.transition = "";
+        card.style.transform = "";
+      }
+
+      card.addEventListener("click", toggle);
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggle();
+        }
       });
     });
   }
@@ -558,6 +588,7 @@
   initConfetti();
   initSpotify();
   initPhotoTilt();
+  initPhotoFlip();
   initPostitDraw();
   initTypewriter();
 })();
