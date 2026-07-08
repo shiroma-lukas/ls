@@ -588,6 +588,70 @@ main {
   background: rgba(29, 15, 51, 0.72);
 }
 
+/* Chapter 1 (intro): folklore figure in the bottom-right, fading out */
+#chapter-1 {
+  overflow: hidden;
+}
+
+#chapter-1::after {
+  content: "";
+  position: absolute;
+  right: -1%;
+  bottom: 0;
+  width: min(56vw, 22rem);
+  aspect-ratio: 851 / 868;
+  background: url("public/folk.png") bottom right / contain no-repeat;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 0;
+  /* outline that follows the cutout silhouette (border would be a rectangle) */
+  filter:
+    drop-shadow(1.5px 0 0 var(--folk-border, #f3ecd9))
+    drop-shadow(-1.5px 0 0 var(--folk-border, #f3ecd9))
+    drop-shadow(0 1.5px 0 var(--folk-border, #f3ecd9))
+    drop-shadow(0 -1.5px 0 var(--folk-border, #f3ecd9));
+  -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 94%);
+  mask-image: linear-gradient(to bottom, #000 58%, transparent 94%);
+  transform-origin: bottom center;
+  animation: folk-rock 2.2s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+
+@keyframes folk-rock {
+  0%, 14%   { transform: rotate(-2.5deg); }
+  40%, 60%  { transform: rotate(2.5deg); }
+  86%, 100% { transform: rotate(-2.5deg); }
+}
+
+#chapter-1 .chapter-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Chapter 3: cats illustration anchored to the bottom, fading out */
+#chapter-3 {
+  overflow: hidden;
+}
+
+#chapter-3::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(94vw, 44rem);
+  aspect-ratio: 1024 / 548;
+  background: url("public/cats.png") bottom center / contain no-repeat;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 52%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 52%, transparent 90%);
+}
+
+#chapter-3 .chapter-inner {
+  position: relative;
+  z-index: 1;
+}
+
 .chapter-label {
   display: inline-block;
   font-size: 0.7rem;
@@ -951,6 +1015,33 @@ main {
   z-index: 3;
 }
 
+/* Active (zoomed-to-center) card and its dimming backdrop */
+.photo-collage .photo-card.zoomed {
+  z-index: 30;
+  cursor: zoom-out;
+}
+
+.gallery-chapter.card-open {
+  z-index: 40;
+}
+
+.photo-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(8, 4, 14, 0.72);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s var(--ease-out);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+.photo-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* rotating 3D layer */
 .photo-collage .photo-inner {
   position: absolute;
@@ -1065,7 +1156,6 @@ main {
 
 /* oversized decorative quote mark */
 .photo-collage .photo-back::after {
-  content: "\201C";
   position: absolute;
   top: 0.1rem;
   left: 0.45rem;
@@ -1125,6 +1215,49 @@ main {
 .finale {
   text-align: center;
   background: linear-gradient(180deg, rgba(29, 15, 51, 0.72) 0%, rgba(13, 6, 22, 0.85) 100%);
+}
+
+/* Polaroid revealed by the "festa" button */
+.finale .polaroid {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  width: min(62vw, 15rem);
+  margin: 0;
+  padding: 0.7rem 0.7rem 1.6rem;
+  background: #fbf7ef;
+  border-radius: 2px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -42%) rotate(-5deg) scale(0.55);
+  transition:
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.35s var(--ease-out);
+}
+
+.finale .polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: #d9cfc0;
+}
+
+.finale .polaroid figcaption {
+  margin-top: 0.55rem;
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: #2a2318;
+}
+
+.finale .polaroid.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) rotate(-4deg) scale(1);
 }
 
 .finale-content {
@@ -1381,6 +1514,7 @@ main {
   .grain { animation: none; }
   .marquee-track { animation: none; }
   .floaties { display: none; }
+  #chapter-1::after { animation: none; }
 
   #chapter-2 .moment-card,
   #chapter-2 .moment-card:hover,

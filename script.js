@@ -155,6 +155,24 @@
     }
 
     btn.addEventListener("click", launch);
+
+    // Pop in the us.jpeg polaroid when the "festa" button is clicked.
+    const polaroid = document.getElementById("festa-polaroid");
+    if (polaroid) {
+      btn.addEventListener("click", () => {
+        polaroid.classList.remove("show");
+        // force reflow so the pop animation restarts on repeat clicks
+        void polaroid.offsetWidth;
+        polaroid.classList.add("show");
+        polaroid.setAttribute("aria-hidden", "false");
+      });
+
+      polaroid.addEventListener("click", () => {
+        polaroid.classList.remove("show");
+        polaroid.setAttribute("aria-hidden", "true");
+      });
+    }
+
     window.addEventListener("resize", resize);
     resize();
 
@@ -396,32 +414,107 @@
     });
   }
 
-  // ── Photo flip: click a photo to pop and flip to the note ────
+  // ── Photo flip: click a photo to zoom it to center and flip ──
   function initPhotoFlip() {
-    const cards = document.querySelectorAll(".photo-collage .photo-card");
+    const cards = Array.from(
+      document.querySelectorAll(".photo-collage .photo-card")
+    );
     if (!cards.length) return;
+
+    const section = document.getElementById("gallery");
+
+    // Dimming backdrop shares the section's stacking context so the
+    // active card can sit above it while its siblings sit below.
+    const backdrop = document.createElement("div");
+    backdrop.className = "photo-backdrop";
+    (section || document.body).appendChild(backdrop);
+
+    let activeCard = null;
+    let raf = null;
+
+    // Center the active card in the viewport and scale it up. Measured
+    // from the untransformed rect so it stays correct on scroll/resize.
+    function positionActive() {
+      if (!activeCard) return;
+      activeCard.style.transform = "";
+      const rect = activeCard.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = window.innerWidth / 2 - cx;
+      const dy = window.innerHeight / 2 - cy;
+      const scaleH = (window.innerHeight * 0.72) / rect.height;
+      const scaleW = (window.innerWidth * 0.86) / rect.width;
+      const scale = Math.max(1, Math.min(scaleH, scaleW, 3.4));
+      activeCard.style.transform =
+        `translate(${dx}px, ${dy}px) scale(${scale})`;
+    }
+
+    function open(card) {
+      activeCard = card;
+      if (section) section.classList.add("card-open");
+      backdrop.classList.add("show");
+      card.classList.add("flipped", "zoomed");
+      card.setAttribute("aria-pressed", "true");
+      card.style.transition = "transform 0.6s var(--ease-out)";
+      positionActive();
+    }
+
+    function close(card) {
+      card.classList.remove("flipped", "zoomed");
+      card.setAttribute("aria-pressed", "false");
+      card.style.transform = "";
+
+      const done = () => {
+        card.style.transition = "";
+        card.removeEventListener("transitionend", done);
+      };
+      card.addEventListener("transitionend", done);
+
+      backdrop.classList.remove("show");
+      if (section) section.classList.remove("card-open");
+      if (activeCard === card) activeCard = null;
+    }
+
+    function toggle(card) {
+      if (card.classList.contains("zoomed")) {
+        close(card);
+      } else {
+        if (activeCard && activeCard !== card) close(activeCard);
+        open(card);
+      }
+    }
 
     cards.forEach((card) => {
       card.setAttribute("role", "button");
       card.setAttribute("tabindex", "0");
       card.setAttribute("aria-pressed", "false");
 
-      function toggle() {
-        const flipped = card.classList.toggle("flipped");
-        card.setAttribute("aria-pressed", flipped ? "true" : "false");
-        // Clear any hover-tilt transform so the flip animates from neutral.
-        card.style.transition = "";
-        card.style.transform = "";
-      }
-
-      card.addEventListener("click", toggle);
+      card.addEventListener("click", () => toggle(card));
       card.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          toggle();
+          toggle(card);
         }
       });
     });
+
+    backdrop.addEventListener("click", () => {
+      if (activeCard) close(activeCard);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && activeCard) close(activeCard);
+    });
+
+    function reflow() {
+      if (!activeCard || raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        positionActive();
+      });
+    }
+    window.addEventListener("scroll", reflow, { passive: true });
+    window.addEventListener("resize", reflow);
   }
 
   // ── Post-it drawing canvases ─────────────────────────────────
