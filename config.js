@@ -3,59 +3,71 @@
 // ═══════════════════════════════════════════════════════════════
 
 const STORY_CONFIG = {
-  herName: "Her Name",
+  herName: "Lívia Stein",
   yourName: "Your Name",
   birthdayDate: "July 7", // optional, for display only
+
+  // Photo used to "fill" the giant hero name. Leave "" for a gradient.
+  // Tip: a bright, high-contrast photo works best. e.g. "photos/her.jpg"
+  heroNameImage: "",
+
+  // Emojis that float up the screen. Swap in her favorites!
+  floaties: ["🎉", "🎂", "✨", "🩵", "🥳", "⭐", "🎈", "💫", "🩷"],
+
+  // Spotify embed — folklore album (legal streaming, no file needed).
+  spotify: {
+    albumId: "1pzvBxYgT6OVwJLtHkrdQK",
+    title: "folklore — Taylor Swift",
+  },
 
   chapters: [
     {
       id: "chapter-1",
-      label: "Chapter 1",
-      title: "The day we met",
+      label: "01",
+      title: "the main character",
       paragraphs: [
-        "Some stories begin with fireworks. Ours began quieter — a moment that didn't feel loud at the time, but somehow rearranged everything.",
-        "I didn't know yet that you'd become my favorite person to talk to, my calm in chaos, the reason ordinary days started to feel extraordinary.",
+        "ok but the world really said \"let's make this better\" the day you showed up. warm, funny, lowkey chaotic, endlessly kind — the whole package fr.",
+        "you walk in and the vibe just shifts. everyone clocks it. i clock it every single day. no notes, just you.",
       ],
-      quote: "I still remember exactly how you smiled.",
+      quote: "you're literally the moment. always have been.",
     },
     {
       id: "chapter-2",
-      label: "Chapter 2",
-      title: "Little moments",
+      label: "02",
+      title: "the little things that make you iconic",
       paragraphs: [
-        "It's not always the big adventures. It's the way you laugh at something silly. The late-night conversations. The comfortable silences.",
-        "These are the pages I keep turning back to — the ones I never want to end.",
+        "it's the laugh. it's how you notice the people everyone else scrolls past. the random 2am ideas, the big dreams, the way you care with your whole chest.",
+        "these are the details i hope you never lose — the ones that are so you it's kind of unreal.",
       ],
       moments: [
-        { icon: "☕", text: "Morning coffees together" },
-        { icon: "🌙", text: "Late-night talks" },
-        { icon: "🎵", text: "Our songs on repeat" },
-        { icon: "🌸", text: "Random adventures" },
+        { icon: "😭", text: "that unhinged laugh" },
+        { icon: "🧠", text: "the 2am ideas" },
+        { icon: "🎨", text: "everything you make" },
+        { icon: "🫶", text: "how hard you love" },
       ],
     },
     {
       id: "chapter-3",
-      label: "Chapter 3",
-      title: "Why you",
+      label: "03",
+      title: "reasons you're that girl",
       reasons: [
-        "Your kindness — the real, quiet kind",
-        "How you see the best in people (and in me)",
-        "Your laugh — I could listen to it forever",
-        "The way you make every place feel like home",
-        "Because with you, even ordinary feels like magic",
+        "your kindness — the real, no-clout-needed kind",
+        "the way you chase what you love, zero apologies",
+        "your laugh (genuinely my roman empire)",
+        "how brave you are even when it's scary",
+        "the main character energy in every single room",
       ],
     },
   ],
 
   photos: [
-    { src: "", alt: "Our first adventure", caption: "Our first adventure" },
-    { src: "", alt: "A day I'll never forget", caption: "A day I'll never forget", wide: true },
-    { src: "", alt: "Just us", caption: "Just us" },
-    { src: "", alt: "My favorite smile", caption: "My favorite smile" },
+    { src: "public/1.jpeg", alt: "espontânea", caption: "espontânea ☕️" },
+    { src: "public/2.jpeg", alt: "radical", caption: "radical" },
+    { src: "public/3.jpeg", alt: "babilônica", caption: "babilônica 💅🏻" },
   ],
 
   finale: {
     message:
-      "Thank you for being you. For every chapter we've written so far, and for all the ones still waiting for us. I love you — today and always.",
+      "today's all about you — every iconic, one-of-one part of you. thank you for being exactly who you are. praying this year is as obsessed with you as i am. 🎉",
   },
 };
