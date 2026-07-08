@@ -7,7 +7,7 @@
   <title>feliz aniversário ✨</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Space+Grotesk:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -35,23 +35,30 @@
       </div>
     </div>
 
-    <button class="music-toggle" id="music-toggle" type="button"
-            aria-label="Open folklore on Spotify" aria-expanded="false"
-            aria-controls="spotify-panel">
-      <span class="music-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-    </button>
-
-    <div class="spotify-panel" id="spotify-panel" hidden>
-      <iframe
-        id="spotify-embed"
-        title="Spotify — folklore by Taylor Swift"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
-      ></iframe>
-    </div>
-
     <div class="hero-content reveal">
-      <h1><span class="name name-hero" id="her-name">Lívia Stein</span></h1>
+      <h1 class="hero-name" id="her-name" aria-label="Lívia Stein">
+        <span class="name name-hero name-line">Lívia</span>
+        <span class="hero-date" id="hero-date">08/07</span>
+        <span class="name name-hero name-line">Stein</span>
+      </h1>
+
+      <div class="music-control">
+        <button class="music-toggle" id="music-toggle" type="button"
+                aria-label="Open folklore on Spotify" aria-expanded="false"
+                aria-controls="spotify-panel">
+          <span class="music-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="music-label">folklore</span>
+        </button>
+
+        <div class="spotify-panel" id="spotify-panel" hidden>
+          <iframe
+            id="spotify-embed"
+            title="Spotify — folklore by Taylor Swift"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -59,107 +66,97 @@
   <section class="chapter story-chapter" id="chapter-1" data-chapter="Chapter 1">
     <div class="chapter-inner">
       <span class="chapter-label reveal">01</span>
-      <h2 class="chapter-title reveal">the main character</h2>
+      <h2 class="chapter-title reveal">intro</h2>
       <div class="story-text reveal">
-        <p>ok but the world really said "let's make this better" the day you showed up. warm, funny, lowkey chaotic, endlessly kind — the whole package fr.</p>
-        <p>you walk in and the vibe just shifts. everyone clocks it. i clock it every single day. no notes, just you.</p>
+        <p>tá, se você não deu play em folklore, você precisa voltar e fazer isso pra ter a experiência completa</p>
+        <p>aí eu acho que o resto é só você ir descendo e lendo tudo que eu escrevi e fiz aqui kkkkk</p>
       </div>
       <blockquote class="pull-quote reveal">
-        "you're literally the moment. always have been."
+        espero que você goste
       </blockquote>
     </div>
   </section>
-
-  <!-- CHAPTER 2 -->
-  <section class="chapter story-chapter alt" id="chapter-2" data-chapter="Chapter 2">
-    <div class="chapter-inner">
-      <span class="chapter-label reveal">02</span>
-      <h2 class="chapter-title reveal">the little things that make you iconic</h2>
-      <div class="story-text reveal">
-        <p>it's the laugh. it's how you notice the people everyone else scrolls past. the random 2am ideas, the big dreams, the way you care with your whole chest.</p>
-        <p>these are the details i hope you never lose — the ones that are so you it's kind of unreal.</p>
+  
+    <!-- CHAPTER 3 -->
+    <section class="chapter story-chapter" id="chapter-3" data-chapter="Chapter 3">
+      <div class="chapter-inner">
+        <span class="chapter-label reveal">02</span>
+        <h2 class="chapter-title reveal">lívia em bullet points</h2>
+        <ul class="reasons-list reveal">
+          <li>linda, a mulher mais linda do mundo</li>
+          <li>inteligente, esperta, devoradora de livros</li>
+          <li>viciada em compras, carinho, cafés</li>
+          <li>icônica, babilônica, cuntíssima</li>
+          <li>amor da minha vida</li>
+        </ul>
       </div>
-    </div>
-    <ul class="moments-grid reveal" aria-label="the little things that make you iconic">
-      <li class="moment-card">
-        <span class="moment-icon">😭</span>
-        <p>that unhinged laugh</p>
-      </li>
-      <li class="moment-card">
-        <span class="moment-icon">🧠</span>
-        <p>the 2am ideas</p>
-      </li>
-      <li class="moment-card">
-        <span class="moment-icon">🎨</span>
-        <p>everything you make</p>
-      </li>
-      <li class="moment-card">
-        <span class="moment-icon">🫶</span>
-        <p>how hard you love</p>
-      </li>
-    </ul>
-  </section>
+    </section>
 
-  <!-- PHOTO GALLERY -->
-  <section class="chapter gallery-chapter" id="gallery" data-chapter="Her">
-    <div class="gallery-scroll">
-      <div class="gallery-sticky">
-        <div class="chapter-inner gallery-heading">
-          <span class="chapter-label reveal">the photo dump</span>
-          <h2 class="chapter-title reveal">you, but make it a moodboard 📸</h2>
-          <p class="gallery-hint reveal">keep scrolling — your best angles incoming. drop your pics in <code>config.js</code></p>
-        </div>
-        <div class="photo-collage">
-          <figure class="photo-card">
-            <div class="photo-placeholder" data-label="Photo 1">
-              <!-- Replace with: <img src="photos/01.jpg" alt="That smile" /> -->
-            </div>
-            <figcaption>the smile 😭</figcaption>
-          </figure>
-          <figure class="photo-card">
-            <div class="photo-placeholder" data-label="Photo 2"></div>
-            <figcaption>in your element</figcaption>
-          </figure>
-          <figure class="photo-card">
-            <div class="photo-placeholder" data-label="Photo 3"></div>
-            <figcaption>simply iconic</figcaption>
-          </figure>
-          <figure class="photo-card">
-            <div class="photo-placeholder" data-label="Photo 4"></div>
-            <figcaption>birthday girl 🎂</figcaption>
-          </figure>
+    
+    <!-- PHOTO GALLERY -->
+    <section class="chapter gallery-chapter" id="gallery" data-chapter="Her">
+      <div class="gallery-scroll">
+        <div class="gallery-sticky">
+          <div class="chapter-inner">
+            <span class="chapter-label reveal">03</span>
+            <h2 class="chapter-title reveal">lívia aos olhos de lukas</h2>
+            <p class="gallery-hint reveal">esse rosto, esse sorriso e, é claro, toda a sua capacidade de lacrar em qualquer situação</p>
+            <p class="gallery-hint reveal">captadas por mim</p>
+          </div>
+          <div class="photo-collage">
+            <figure class="photo-card">
+              <img src="public/1.jpeg" alt="espontânea" loading="lazy" />
+              <figcaption>espontânea ☕️</figcaption>
+            </figure>
+            <figure class="photo-card">
+              <img src="public/2.jpeg" alt="radical" loading="lazy" />
+              <figcaption>radical 🤘🏻</figcaption>
+            </figure>
+            <figure class="photo-card">
+              <img src="public/3.jpeg" alt="babilônica" loading="lazy" />
+              <figcaption>cunt 💅🏻</figcaption>
+            </figure>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- CHAPTER 3 -->
-  <section class="chapter story-chapter" id="chapter-3" data-chapter="Chapter 3">
-    <div class="chapter-inner">
-      <span class="chapter-label reveal">03</span>
-      <h2 class="chapter-title reveal">reasons you're that girl</h2>
-      <ul class="reasons-list reveal">
-        <li>your kindness — the real, no-clout-needed kind</li>
-        <li>the way you chase what you love, zero apologies</li>
-        <li>your laugh (genuinely my roman empire)</li>
-        <li>how brave you are even when it's scary</li>
-        <li>the main character energy in every single room</li>
+    </section>
+    
+    <!-- CHAPTER 2 -->
+    <section class="chapter story-chapter alt" id="chapter-2" data-chapter="Chapter 2">
+      <div class="chapter-inner">
+        <span class="chapter-label reveal">04</span>
+        <h2 class="chapter-title reveal">enfim, o que eu quero te dizer é</h2>
+        <div class="story-text reveal">
+          <p>ter você na minha vida é o meu maior presente e eu não consigo imaginar qualquer futuro onde a gente não caminhe juntos</p>
+          <p>você é a minha maior inspiração e todos os dias eu acordo sabendo que eu namoro a melhor pessoa que já existiu</p>
+        </div>
+      </div>
+      <ul class="moments-grid reveal" aria-label="the little things that make you iconic">
+        <li class="moment-card">
+          <p>tenha um bom dia ♥</p>
+        </li>
+        <li class="moment-card">
+          <p>nem te vi ainda e já sei que você tá linda hoje</p>
+        </li>
+        <li class="moment-card">
+          <p>eu amo cada pedaço seu</p>
+        </li>
+        <li class="moment-card">
+          <p>quer namorar comigo?</p>
+        </li>
       </ul>
-    </div>
-  </section>
+    </section>
 
   <!-- FINALE -->
   <section class="chapter finale" id="finale" data-chapter="Finale">
     <div class="finale-content reveal">
-      <p class="eyebrow">and today…</p>
-      <h2>happy birthday,<br /><span class="name" id="her-name-finale">Lívia Stein</span></h2>
+      <h2>parabéns<br /><span class="name">amor</span></h2>
       <p class="finale-message">
-        today's all about you — every iconic, one-of-one part of you.
-        thank you for being exactly who you are. praying this year is as
-        obsessed with you as i am. 🎉
+        eu amo dividir a vida com você e eu quero continuar assim pra sempre.
+        te amo, te amo e te amo mais que tudo.
       </p>
-      <p class="signature" id="your-name">— lots of love, [Your Name]</p>
-      <button class="confetti-btn" id="confetti-btn" type="button">🎉 make it pop</button>
+      <p class="signature">- lukas shiroma</p>
+      <button class="confetti-btn" id="confetti-btn" type="button">🎉 festa</button>
     </div>
   </section>
   </main>

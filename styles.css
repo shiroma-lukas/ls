@@ -14,6 +14,7 @@
   --accent: #a674ff;
   --font-display: "Syne", "Space Grotesk", system-ui, sans-serif;
   --font-body: "Space Grotesk", system-ui, sans-serif;
+  --font-hand: "Cedarville Cursive", cursive;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Mobile defaults */
@@ -37,12 +38,6 @@ html {
   scroll-behavior: smooth;
   scroll-snap-type: y proximity;
   -webkit-overflow-scrolling: touch;
-}
-
-/* While the sticky photo stack is pinned, let the user scroll through it
-   freely instead of fighting the page-level snap. Toggled by JS. */
-html.gallery-active {
-  scroll-snap-type: none;
 }
 
 body {
@@ -267,11 +262,16 @@ main {
 }
 
 /* ── Music toggle ───────────────────────────────────────────── */
-.music-toggle {
-  position: absolute;
-  top: 3rem;
-  right: max(1rem, env(safe-area-inset-right, 0px));
+.music-control {
+  position: relative;
+  display: inline-block;
+  margin-top: 1.5rem;
   z-index: 20;
+}
+
+.music-toggle {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -320,13 +320,13 @@ main {
   height: 30%;
 }
 
-.music-toggle.playing .music-eq i {
+.music-eq i {
   animation: eq 0.9s ease-in-out infinite;
 }
 
-.music-toggle.playing .music-eq i:nth-child(2) { animation-delay: 0.15s; }
-.music-toggle.playing .music-eq i:nth-child(3) { animation-delay: 0.3s; }
-.music-toggle.playing .music-eq i:nth-child(4) { animation-delay: 0.45s; }
+.music-eq i:nth-child(2) { animation-delay: 0.15s; }
+.music-eq i:nth-child(3) { animation-delay: 0.3s; }
+.music-eq i:nth-child(4) { animation-delay: 0.45s; }
 
 @keyframes eq {
   0%, 100% { height: 25%; }
@@ -341,14 +341,13 @@ main {
 /* ── Spotify embed ──────────────────────────────────────────── */
 .spotify-panel {
   position: absolute;
-  top: 6.25rem;
-  right: max(1rem, env(safe-area-inset-right, 0px));
-  left: max(1rem, env(safe-area-inset-left, 0px));
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 21;
-  max-width: 22rem;
-  margin-left: auto;
+  width: min(22rem, 86vw);
   filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.55));
-  animation: panel-in 0.35s var(--ease-out);
+  animation: panel-in 0.3s var(--ease-out);
 }
 
 .spotify-panel[hidden] {
@@ -356,8 +355,8 @@ main {
 }
 
 @keyframes panel-in {
-  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .spotify-panel iframe {
@@ -370,7 +369,7 @@ main {
 
 @media (min-width: 640px) {
   .spotify-panel {
-    max-width: 25rem;
+    width: 25rem;
   }
 }
 
@@ -448,6 +447,9 @@ main {
   text-align: center;
   align-items: center;
   overflow: hidden;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 0;
 }
 
 .hero-content {
@@ -486,6 +488,11 @@ main {
   gap: 0.1em;
 }
 
+.hero-name {
+  gap: 0;
+  width: 100%;
+}
+
 .hero-greeting {
   font-size: clamp(1.4rem, 6vw, 2.4rem);
   font-weight: 700;
@@ -510,23 +517,38 @@ main {
   -webkit-text-fill-color: transparent;
 }
 
-/* Giant image-masked name in the hero */
+/* Giant image-masked name lines in the hero */
 .name-hero {
   display: block;
   font-size: clamp(4rem, 26vw, 13rem);
   font-weight: 800;
-  line-height: 0.7;
-  letter-spacing: -0.08em;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
   text-transform: uppercase;
-  /* JS sizes this to fill the width on one line; nowrap prevents wrapping */
-  white-space: break-word;
-  /* JS sets the exact scaleY to reach ~80% of the viewport height */
-  transform: scale(1.04, 1.5);
+  /* JS sizes each line to fill the width; nowrap keeps each word on one line */
+  white-space: nowrap;
+  /* stretch the glyphs taller; margins offset the transform's overflow
+     (line-height 0.8 × (scaleY-1)/2 = 0.8 × 0.35 ≈ 0.28em) so the taller
+     letters don't overlap the date */
+  transform: scaleY(1.7);
   transform-origin: center center;
-  padding-top: 0.1em;
+  margin: 0.28em 0;
   /* subtle glow when it's a gradient fallback */
   background-size: cover;
   filter: drop-shadow(0 6px 24px rgba(255, 92, 160, 0.25));
+}
+
+.hero-date {
+  position: relative;
+  z-index: 2;
+  margin-block: -0.8em;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 5rem);
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .hero-sub {
@@ -645,38 +667,241 @@ main {
   line-height: 1.35;
 }
 
-/* ── Gallery: sticky stacking deck ──────────────────────────── */
-.gallery-chapter {
-  background: rgba(21, 10, 36, 0.72);
-  display: block;
-  min-height: 0;
-  padding: 0;
+/* ── Chapter 2: post-it notes ───────────────────────────────── */
+#chapter-2 .moments-grid {
+  gap: 1.5rem 1.1rem;
+  padding: 1rem 0.35rem 0;
 }
 
-/* Tall track that provides scroll distance for the stack.
-   JS sets the exact height; this is the no-JS fallback (one screen). */
-.gallery-scroll {
+#chapter-2 .moment-card {
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  background: var(--postit-bg, linear-gradient(165deg, #fff8c8 0%, #fff59d 100%));
+  border: none;
+  border-radius: 0;
+  padding: var(--postit-pad, 1.35rem 1rem 1.1rem);
+  min-height: var(--postit-min-h, auto);
+  text-align: var(--postit-align, center);
+  box-shadow:
+    1px 1px 0 rgba(0, 0, 0, 0.04),
+    var(--postit-shadow-x, 3px) var(--postit-shadow-y, 5px) 8px rgba(0, 0, 0, 0.12),
+    calc(var(--postit-shadow-x, 3px) * 1.5) calc(var(--postit-shadow-y, 5px) * 1.8) 16px rgba(0, 0, 0, 0.06);
+  transform:
+    rotate(var(--postit-tilt, -2deg))
+    translate(var(--postit-x, 0), var(--postit-y, 0));
+  transition:
+    transform 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out);
+}
+
+#chapter-2 .postit-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+#chapter-2 .moment-icon,
+#chapter-2 .moment-card p {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+#chapter-2 .moment-card::before {
+  content: "";
+  position: absolute;
+  top: var(--tape-top, -7px);
+  left: var(--tape-left, 50%);
+  width: var(--tape-width, 42%);
+  height: var(--tape-height, 14px);
+  transform: translateX(-50%) rotate(var(--tape-tilt, -1deg));
+  background: var(--tape-bg, rgba(255, 255, 255, 0.28));
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+}
+
+#chapter-2 .moment-card::after {
+  content: "";
+  position: absolute;
+  inset: auto var(--curl-right, 0) var(--curl-bottom, 0) auto;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: var(--curl-size, 0 0 14px 14px);
+  border-color: var(--curl-color, transparent transparent rgba(0, 0, 0, 0.05) transparent);
+  pointer-events: none;
+}
+
+/* Classic yellow — tall, left-aligned, tape on the left */
+#chapter-2 .moment-card:nth-child(1) {
+  --postit-tilt: -1deg;
+  --postit-x: -6px;
+  --postit-y: 4px;
+  --postit-pad: 1.6rem 0.9rem 1rem 1.3rem;
+  --postit-min-h: 8.25rem;
+  --postit-align: left;
+  --postit-shadow-x: 4px;
+  --postit-shadow-y: 6px;
+  --tape-left: 28%;
+  --tape-width: 34%;
+  --tape-tilt: 2deg;
+  --tape-bg: rgba(255, 236, 179, 0.4);
+  --postit-bg: linear-gradient(165deg, #fff8c8 0%, #fff59d 100%);
+}
+
+/* Pink — wide, centered, tape high and crooked */
+#chapter-2 .moment-card:nth-child(2) {
+  --postit-tilt: 2deg;
+  --postit-x: 8px;
+  --postit-y: -5px;
+  --postit-pad: 1.2rem 1.35rem 1.35rem;
+  --postit-min-h: 7rem;
+  --postit-align: center;
+  --postit-shadow-x: -2px;
+  --postit-shadow-y: 7px;
+  --tape-left: 68%;
+  --tape-width: 48%;
+  --tape-top: -9px;
+  --tape-tilt: -1deg;
+  --tape-height: 16px;
+  --postit-bg: linear-gradient(165deg, #ffe8f3 0%, #ffc4e1 100%);
+}
+
+/* Mint — compact, right-aligned, curl top-left */
+#chapter-2 .moment-card:nth-child(3) {
+  --postit-tilt: -2deg;
+  --postit-x: -3px;
+  --postit-y: 8px;
+  --postit-pad: 1.1rem 1.2rem 1.4rem 0.85rem;
+  --postit-min-h: 6.75rem;
+  --postit-align: right;
+  --postit-shadow-x: 5px;
+  --postit-shadow-y: 4px;
+  --tape-left: 52%;
+  --tape-width: 30%;
+  --tape-tilt: 1deg;
+  --tape-bg: rgba(220, 255, 240, 0.45);
+  --curl-right: auto;
+  --curl-bottom: auto;
+  --curl-size: 12px 12px 0 0;
+  --curl-color: rgba(0, 0, 0, 0.04) transparent transparent transparent;
+  --postit-bg: linear-gradient(165deg, #e8faf2 0%, #b8f0d8 100%);
+}
+
+#chapter-2 .moment-card:nth-child(3)::after {
+  inset: 0 auto auto 0;
+}
+
+/* Lavender — biggest tilt, bottom-left curl, short tape */
+#chapter-2 .moment-card:nth-child(4) {
+  --postit-tilt: 1deg;
+  --postit-x: 5px;
+  --postit-y: -2px;
+  --postit-pad: 1.45rem 1rem 1.15rem 1.1rem;
+  --postit-min-h: 7.5rem;
+  --postit-align: left;
+  --postit-shadow-x: -4px;
+  --postit-shadow-y: 8px;
+  --tape-left: 42%;
+  --tape-width: 26%;
+  --tape-top: -5px;
+  --tape-tilt: -2deg;
+  --tape-height: 11px;
+  --curl-right: auto;
+  --curl-bottom: 0;
+  --curl-size: 0 0 16px 16px;
+  --curl-color: transparent transparent rgba(0, 0, 0, 0.05) transparent;
+  --postit-bg: linear-gradient(165deg, #f3ecff 0%, #d4c0ff 100%);
+}
+
+#chapter-2 .moment-card:nth-child(4)::after {
+  inset: auto auto 0 0;
+}
+
+#chapter-2 .moment-icon {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
+}
+
+#chapter-2 .moment-card:nth-child(1) .moment-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+#chapter-2 .moment-card:nth-child(2) .moment-icon {
+  font-size: 1.45rem;
+  margin-bottom: 0.6rem;
+}
+
+#chapter-2 .moment-card:nth-child(3) .moment-icon {
+  font-size: 1.85rem;
+  margin-bottom: 0.25rem;
+}
+
+#chapter-2 .moment-card:nth-child(4) .moment-icon {
+  font-size: 1.55rem;
+  margin-bottom: 0.45rem;
+}
+
+#chapter-2 .moment-card p {
+  font-family: var(--font-hand);
+  font-size: var(--postit-font-size, clamp(0.95rem, 3.8vw, 1.2rem));
+  font-weight: 400;
+
+  color: #353535;
+  text-shadow: 0 0 0.5px rgba(0, 0, 0, 0.15);
+  line-height: 1.15;
+  letter-spacing: var(--postit-letter-spacing, 0);
+}
+
+#chapter-2 .moment-card:nth-child(1) p {
+  --postit-font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+}
+
+#chapter-2 .moment-card:nth-child(2) p {
+  --postit-font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+  --postit-letter-spacing: 0.02em;
+}
+
+#chapter-2 .moment-card:nth-child(3) p {
+  --postit-font-size: clamp(1.05rem, 4.2vw, 1.25rem);
+  --postit-ink: #1f3329;
+}
+
+#chapter-2 .moment-card:nth-child(4) p {
+  --postit-font-size: clamp(1rem, 3.8vw, 1.2rem);
+  --postit-ink: #2a1f3d;
+}
+
+#chapter-2 .moment-card:active {
+  border-color: transparent;
+  transform:
+    rotate(var(--postit-tilt, -1deg))
+    translate(var(--postit-x, 0), var(--postit-y, 0))
+    scale(0.97);
+  box-shadow:
+    1px 1px 0 rgba(0, 0, 0, 0.04),
+    2px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Gallery: static photo collage ──────────────────────────── */
+.gallery-chapter {
+  background: rgba(21, 10, 36, 0.72);
+}
+
+.gallery-scroll {
+  width: 100%;
 }
 
 .gallery-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100svh;
-  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
   gap: clamp(0.9rem, 3vh, 1.5rem);
-  overflow: hidden;
-  padding:
-    max(var(--section-pad-y), env(safe-area-inset-top, 0px))
-    var(--section-pad-x)
-    var(--section-pad-bottom);
+  width: 100%;
 }
 
 .gallery-heading {
@@ -720,8 +945,15 @@ main {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
-  will-change: transform, opacity;
-  backface-visibility: hidden;
+  transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .photo-collage .photo-card:hover {
+    transform: scale(1.12);
+    z-index: 2;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  }
 }
 
 .photo-collage .photo-placeholder,
@@ -760,7 +992,6 @@ main {
   text-align: left;
   font-size: 0.8rem;
   color: var(--rose-light);
-  font-style: italic;
   font-family: var(--font-display);
 }
 
@@ -771,20 +1002,30 @@ main {
 
 .reasons-list li {
   position: relative;
-  padding: 0.75rem 0 0.75rem 1.75rem;
+  padding: 0.75rem 0;
   border-bottom: 1px solid rgba(255,255,255,0.06);
   color: var(--text-muted);
   font-size: var(--body-size);
   line-height: 1.45;
 }
 
-.reasons-list li::before {
-  content: "✧";
-  position: absolute;
-  left: 0;
-  color: var(--cyan);
-  font-size: 0.95rem;
-  top: 0.8rem;
+.reasons-list li::first-letter {
+  color: var(--rose);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.reasons-list li.typing::after {
+  content: "|";
+  margin-left: 1px;
+  color: var(--accent);
+  font-weight: 700;
+  animation: caret-blink 0.8s step-end infinite;
+}
+
+@keyframes caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 /* ── Finale ─────────────────────────────────────────────────── */
@@ -821,11 +1062,10 @@ main {
   min-height: 52px;
   padding: 0.9rem 2rem;
   border: none;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--rose), var(--purple));
+  background: var(--rose);
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(255, 92, 160, 0.45);
+  box-shadow: 0 0 24px rgba(255, 92, 160, 0.45);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -924,6 +1164,18 @@ main {
     border-color: var(--rose);
   }
 
+  #chapter-2 .moment-card:hover {
+    transform:
+      rotate(0deg)
+      translate(var(--postit-x, 0), calc(var(--postit-y, 0px) - 8px))
+      scale(1.03);
+    border-color: transparent;
+    box-shadow:
+      1px 1px 0 rgba(0, 0, 0, 0.04),
+      4px 8px 14px rgba(0, 0, 0, 0.14),
+      8px 14px 22px rgba(0, 0, 0, 0.08);
+  }
+
   .moment-icon {
     font-size: 1.75rem;
     margin-bottom: 0.5rem;
@@ -948,7 +1200,7 @@ main {
   }
 
   .reasons-list li {
-    padding: 0.85rem 0 0.85rem 2rem;
+    padding: 0.85rem 0;
     font-size: 1.05rem;
   }
 
@@ -1036,4 +1288,10 @@ main {
   .grain { animation: none; }
   .marquee-track { animation: none; }
   .floaties { display: none; }
+
+  #chapter-2 .moment-card,
+  #chapter-2 .moment-card:hover,
+  #chapter-2 .moment-card:active {
+    transform: none;
+  }
 }

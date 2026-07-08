@@ -2,15 +2,12 @@
   "use strict";
 
   // ── Apply config ───────────────────────────────────────────
+  // Text content lives directly in index.html now. This only handles the
+  // optional photo mask on the hero name.
   function applyConfig() {
     if (typeof STORY_CONFIG === "undefined") return;
 
-    const { herName, yourName, chapters, photos, finale, heroNameImage } =
-      STORY_CONFIG;
-
-    document.querySelectorAll("#her-name, #her-name-finale").forEach((el) => {
-      el.textContent = herName;
-    });
+    const { heroNameImage } = STORY_CONFIG;
 
     // Mask the name text with a photo when provided (otherwise solid color).
     if (heroNameImage) {
@@ -22,65 +19,6 @@
         el.classList.add("masked");
       });
     }
-
-    const sig = document.getElementById("your-name");
-    if (sig) sig.textContent = `— lots of love, ${yourName}`;
-
-    chapters.forEach((ch) => {
-      const section = document.getElementById(ch.id);
-      if (!section) return;
-
-      const label = section.querySelector(".chapter-label");
-      const title = section.querySelector(".chapter-title");
-      if (label) label.textContent = ch.label;
-      if (title) title.textContent = ch.title;
-
-      const storyText = section.querySelector(".story-text");
-      if (storyText && ch.paragraphs) {
-        storyText.innerHTML = ch.paragraphs.map((p) => `<p>${p}</p>`).join("");
-      }
-
-      const quote = section.querySelector(".pull-quote");
-      if (quote && ch.quote) quote.textContent = `"${ch.quote}"`;
-
-      const momentsGrid = section.querySelector(".moments-grid");
-      if (momentsGrid && ch.moments) {
-        momentsGrid.innerHTML = ch.moments
-          .map(
-            (m) => `
-          <li class="moment-card">
-            <span class="moment-icon">${m.icon}</span>
-            <p>${m.text}</p>
-          </li>`
-          )
-          .join("");
-      }
-
-      const reasonsList = section.querySelector(".reasons-list");
-      if (reasonsList && ch.reasons) {
-        reasonsList.innerHTML = ch.reasons.map((r) => `<li>${r}</li>`).join("");
-      }
-    });
-
-    const photoCollage = document.querySelector(".photo-collage");
-    if (photoCollage && photos?.length) {
-      photoCollage.classList.toggle("odd", photos.length % 2 === 1);
-      photoCollage.innerHTML = photos
-        .map((photo, i) => {
-          const media = photo.src
-            ? `<img src="${photo.src}" alt="${photo.alt}" loading="lazy" />`
-            : `<div class="photo-placeholder" data-label="Photo ${i + 1}"></div>`;
-          return `
-          <figure class="photo-card">
-            ${media}
-            <figcaption>${photo.caption}</figcaption>
-          </figure>`;
-        })
-        .join("");
-    }
-
-    const finaleMsg = document.querySelector(".finale-message");
-    if (finaleMsg && finale?.message) finaleMsg.textContent = finale.message;
   }
 
   // ── Chapter navigation dots ──────────────────────────────────
@@ -144,92 +82,6 @@
     );
 
     chapters.forEach((ch) => observer.observe(ch));
-  }
-
-  // ── Photo collage: cards fly in from all sides, tile the screen ──
-  function initPhotoStack() {
-    const track = document.querySelector(".gallery-scroll");
-    const collage = document.querySelector(".photo-collage");
-    if (!track || !collage) return;
-
-    const cards = Array.from(collage.querySelectorAll(".photo-card"));
-    if (!cards.length) return;
-
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Direction each card drifts in from before settling into its cell.
-    const directions = ["left", "top", "right", "bottom"];
-
-    function fromTransform(dir) {
-      switch (dir) {
-        case "left": return { x: -120, y: 0 };
-        case "right": return { x: 120, y: 0 };
-        case "top": return { x: 0, y: -120 };
-        default: return { x: 0, y: 120 }; // bottom
-      }
-    }
-
-    const meta = cards.map((card, i) => ({
-      card,
-      from: fromTransform(directions[i % directions.length]),
-    }));
-
-    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-    const lerp = (a, b, t) => a + (b - a) * t;
-    const clamp01 = (v) => Math.min(1, Math.max(0, v));
-
-    function paint(progress) {
-      const n = meta.length;
-      // Each card enters over its own slice, with a little overlap.
-      const slice = 1 / n;
-      meta.forEach((m, i) => {
-        const local = clamp01((progress - i * slice) / (slice * 0.85));
-        const e = easeOut(local);
-        const x = lerp(m.from.x, 0, e);
-        const y = lerp(m.from.y, 0, e);
-        const scale = lerp(0.92, 1, e);
-        m.card.style.transform =
-          `translate3d(${x}%, ${y}%, 0) scale(${scale})`;
-        m.card.style.opacity = String(clamp01(e * 1.6));
-      });
-    }
-
-    if (reduce) {
-      // No scroll animation — just settle the pile in place.
-      track.style.height = "";
-      paint(1);
-      return;
-    }
-
-    // Give the track enough scroll distance to reveal every card.
-    track.style.height = `${meta.length * 85 + 45}vh`;
-
-    const root = document.documentElement;
-    let ticking = false;
-    function update() {
-      ticking = false;
-      const rect = track.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const distance = track.offsetHeight - vh;
-      const scrolled = clamp01(distance > 0 ? -rect.top / distance : 0);
-      paint(scrolled);
-
-      // Disable page snap only while the stack is pinned in the viewport,
-      // so the other chapters keep their crisp mandatory snap.
-      const pinned = rect.top <= 1 && rect.bottom > vh + 1;
-      root.classList.toggle("gallery-active", pinned);
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", update);
-    update();
   }
 
   // ── Confetti ─────────────────────────────────────────────────
@@ -388,10 +240,9 @@
 
     const embedUrl =
       `https://open.spotify.com/embed/album/${cfg.albumId}` +
-      "?utm_source=generator&theme=0&autoplay=1";
+      "?utm_source=generator&theme=0";
 
     let loaded = false;
-    let suppressNextOutsideClose = false;
 
     function open() {
       if (!loaded) {
@@ -416,10 +267,6 @@
 
     document.addEventListener("click", (e) => {
       if (panel.hidden) return;
-      if (suppressNextOutsideClose) {
-        suppressNextOutsideClose = false;
-        return;
-      }
       if (btn.contains(e.target) || panel.contains(e.target)) return;
       close();
     });
@@ -427,60 +274,65 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !panel.hidden) close();
     });
-
-    // Auto-open (and attempt autoplay) on the visitor's first interaction.
-    // Browsers/Spotify require a user gesture, so we can't start it sooner.
-    let autostarted = false;
-    function autostart(e) {
-      if (autostarted) return;
-      // Let a first tap on the button be handled by its own toggle.
-      if (e.type === "pointerdown" && btn.contains(e.target)) return;
-      autostarted = true;
-      suppressNextOutsideClose = true;
-      open();
-      window.removeEventListener("pointerdown", autostart);
-      window.removeEventListener("keydown", autostart);
-    }
-    window.addEventListener("pointerdown", autostart);
-    window.addEventListener("keydown", autostart);
   }
 
   // ── Fit the hero name to the screen width (no wrapping) ──────
   function initFitName() {
-    const name = document.querySelector(".name-hero");
-    if (!name) return;
-    const parent = name.parentElement;
-    if (!parent) return;
+    const lines = Array.from(document.querySelectorAll(".name-hero"));
+    if (!lines.length) return;
 
-    const SCALE_X = 1.01;
-
-    function fit() {
+    function fitOne(el) {
+      const parent = el.parentElement;
+      if (!parent) return;
       const available = parent.clientWidth;
       if (!available) return;
 
-      // 1) Fit width on one line. Measure with scaleY neutralized so the
-      //    getBoundingClientRect width reflects only the horizontal scale.
-      name.style.transform = `scale(${SCALE_X}, 1)`;
-      name.style.fontSize = "";
-      const baseFs = parseFloat(getComputedStyle(name).fontSize);
-      let width = name.getBoundingClientRect().width;
+      el.style.fontSize = "";
+      const baseFs = parseFloat(getComputedStyle(el).fontSize);
+      let width = el.getBoundingClientRect().width;
       if (!width) return;
       const target = available * 0.98;
       let fs = (baseFs * target) / width;
-      name.style.fontSize = `${fs}px`;
-      width = name.getBoundingClientRect().width;
+      el.style.fontSize = `${fs}px`;
+      // One refinement pass for sub-pixel accuracy.
+      width = el.getBoundingClientRect().width;
       if (width) {
         fs = (fs * target) / width;
-        name.style.fontSize = `${fs}px`;
+        el.style.fontSize = `${fs}px`;
       }
+    }
 
-      // 2) Stretch vertically so the rendered title fills ~80% of the height.
-      //    offsetHeight is the unscaled layout height (ignores transform).
-      const naturalH = name.offsetHeight;
-      if (naturalH) {
-        const scaleY = (window.innerHeight * 0.6) / naturalH;
-        name.style.transform = `scale(${SCALE_X}, ${scaleY})`;
+    // After width-fitting, shrink the title if the hero content is taller
+    // than the section, so nothing overflows the fixed-height hero.
+    function clampToHeight() {
+      const hero = document.querySelector(".hero");
+      const content = document.querySelector(".hero-content");
+      if (!hero || !content) return;
+
+      const cs = getComputedStyle(hero);
+      const available =
+        hero.clientHeight -
+        parseFloat(cs.paddingTop) -
+        parseFloat(cs.paddingBottom);
+      if (available <= 0) return;
+
+      // A few passes converge because margins/transform scale with font-size.
+      for (let i = 0; i < 6; i++) {
+        const contentH = content.getBoundingClientRect().height;
+        if (contentH <= available) break;
+        const ratio = (available / contentH) * 0.99;
+        lines.forEach((el) => {
+          const cur = parseFloat(
+            el.style.fontSize || getComputedStyle(el).fontSize
+          );
+          el.style.fontSize = `${cur * ratio}px`;
+        });
       }
+    }
+
+    function fit() {
+      lines.forEach(fitOne);
+      clampToHeight();
     }
 
     fit();
@@ -511,6 +363,189 @@
     document.addEventListener("pointerdown", tryPlay, { once: true });
   }
 
+  // ── Photo tilt: hovered picture leans toward the cursor ──────
+  function initPhotoTilt() {
+    if (!window.matchMedia("(hover: hover)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const cards = document.querySelectorAll(".photo-collage .photo-card");
+    const MAX_TILT = 10; // degrees
+    const SCALE = 1.12;
+
+    cards.forEach((card) => {
+      card.addEventListener("mouseenter", () => {
+        card.style.transition = "transform 0.12s ease-out, box-shadow 0.4s var(--ease-out)";
+      });
+
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        const rotateY = px * MAX_TILT * 2;
+        const rotateX = -py * MAX_TILT * 2;
+        card.style.transform =
+          `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${SCALE})`;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        card.style.transition = "";
+        card.style.transform = "";
+      });
+    });
+  }
+
+  // ── Post-it drawing canvases ─────────────────────────────────
+  function initPostitDraw() {
+    const cards = document.querySelectorAll("#chapter-2 .moment-card");
+    if (!cards.length) return;
+
+    cards.forEach((card) => {
+      const canvas = document.createElement("canvas");
+      canvas.className = "postit-canvas";
+      canvas.setAttribute("aria-hidden", "true");
+      card.appendChild(canvas);
+
+      const ctx = canvas.getContext("2d");
+      let drawing = false;
+
+      function resize() {
+        const w = card.clientWidth;
+        const h = card.clientHeight;
+        if (!w || !h) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const snapshot = canvas.width > 0 ? canvas.toDataURL() : null;
+
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = "rgba(42, 35, 24, 0.85)";
+
+        if (snapshot) {
+          const img = new Image();
+          img.onload = () => ctx.drawImage(img, 0, 0, w, h);
+          img.src = snapshot;
+        }
+      }
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+      }
+
+      function startDraw(e) {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        drawing = true;
+        canvas.setPointerCapture(e.pointerId);
+        const { x, y } = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      }
+
+      function draw(e) {
+        if (!drawing) return;
+        const { x, y } = getPos(e);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+
+      function stopDraw(e) {
+        if (!drawing) return;
+        drawing = false;
+        if (canvas.hasPointerCapture(e.pointerId)) {
+          canvas.releasePointerCapture(e.pointerId);
+        }
+      }
+
+      resize();
+      new ResizeObserver(resize).observe(card);
+
+      canvas.addEventListener("pointerdown", startDraw);
+      canvas.addEventListener("pointermove", draw);
+      canvas.addEventListener("pointerup", stopDraw);
+      canvas.addEventListener("pointercancel", stopDraw);
+      canvas.addEventListener("pointerleave", stopDraw);
+    });
+  }
+
+  // ── Typewriter effect for the reasons list ──────────────────
+  function initTypewriter() {
+    const list = document.querySelector(".reasons-list");
+    if (!list) return;
+
+    const items = Array.from(list.querySelectorAll("li"));
+    if (!items.length) return;
+
+    // Skip the animation entirely when reduced motion is preferred.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const texts = items.map((li) => li.textContent);
+
+    // Reserve each line's height so trimming the text doesn't shift layout,
+    // and keep the (accent-colored) first letter visible from the start.
+    items.forEach((li, idx) => {
+      li.style.minHeight = `${li.getBoundingClientRect().height}px`;
+      li.textContent = texts[idx].charAt(0);
+    });
+
+    let started = false;
+    function typeAll() {
+      if (started) return;
+      started = true;
+
+      let i = 0;
+      function typeItem() {
+        if (i >= items.length) return;
+        const li = items[i];
+        const text = texts[i];
+
+        // First letter is already shown; type the rest.
+        if (text.length <= 1) {
+          i += 1;
+          setTimeout(typeItem, 180);
+          return;
+        }
+
+        li.classList.add("typing");
+
+        let c = 1;
+        const timer = setInterval(() => {
+          li.textContent = text.slice(0, c + 1);
+          c += 1;
+          if (c >= text.length) {
+            clearInterval(timer);
+            li.classList.remove("typing");
+            i += 1;
+            setTimeout(typeItem, 180);
+          }
+        }, 38);
+      }
+      typeItem();
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            typeAll();
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(list);
+  }
+
   // ── Boot ─────────────────────────────────────────────────────
   applyConfig();
   initFitName();
@@ -518,9 +553,11 @@
   buildNav();
   initReveal();
   initChapterTracking();
-  initPhotoStack();
   initFloaties();
   initScrollHue();
   initConfetti();
   initSpotify();
+  initPhotoTilt();
+  initPostitDraw();
+  initTypewriter();
 })();

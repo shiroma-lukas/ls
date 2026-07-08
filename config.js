@@ -5,7 +5,7 @@
 const STORY_CONFIG = {
   herName: "Lívia Stein",
   yourName: "Your Name",
-  birthdayDate: "July 7", // optional, for display only
+  birthdayDate: "08/07",
 
   // Photo used to "fill" the giant hero name. Leave "" for a gradient.
   // Tip: a bright, high-contrast photo works best. e.g. "photos/her.jpg"
@@ -24,7 +24,7 @@ const STORY_CONFIG = {
     {
       id: "chapter-1",
       label: "01",
-      title: "the main character",
+      title: "lívia aos olhos de lukas",
       paragraphs: [
         "ok but the world really said \"let's make this better\" the day you showed up. warm, funny, lowkey chaotic, endlessly kind — the whole package fr.",
         "you walk in and the vibe just shifts. everyone clocks it. i clock it every single day. no notes, just you.",
@@ -65,9 +65,4 @@ const STORY_CONFIG = {
     { src: "public/2.jpeg", alt: "radical", caption: "radical" },
     { src: "public/3.jpeg", alt: "babilônica", caption: "babilônica 💅🏻" },
   ],
-
-  finale: {
-    message:
-      "today's all about you — every iconic, one-of-one part of you. thank you for being exactly who you are. praying this year is as obsessed with you as i am. 🎉",
-  },
 };
