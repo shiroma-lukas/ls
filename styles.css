@@ -36,7 +36,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -379,8 +378,6 @@ main {
   z-index: 1;
   min-height: 100svh;
   min-height: 100dvh;
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1326,9 +1323,6 @@ main {
     --body-size: 1.05rem;
   }
 
-  html {
-    scroll-snap-type: y proximity;
-  }
 
   .chapter {
     padding:
@@ -1495,11 +1489,6 @@ main {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-    scroll-snap-type: none;
-  }
-
-  .chapter {
-    scroll-snap-stop: normal;
   }
 
   .reveal {
